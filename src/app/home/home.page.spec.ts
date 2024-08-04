@@ -6,47 +6,56 @@ import { Geolocation } from '@capacitor/geolocation';
 import { HomePage } from './home.page';
 import { WeatherService } from '../services/weather.service';
 import { of } from 'rxjs';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
 
-
-
-  // Mock de Geolocation
-  const mockGeolocation = {
-    getCurrentPosition: jasmine.createSpy('getCurrentPosition').and.returnValue(Promise.resolve({
-      coords: {
-        latitude: 40.7128,
-        longitude: -74.0060
-      }
-    }))
-  };
-
-
-  // Mock del WeatherService
-  const mockWeatherService = {
-    getWeather: jasmine.createSpy('getWeather').and.returnValue(of({
-      hourly: {
-        time: [],
-        temperature_2m: [],
-        relative_humidity_2m: []
-      }
-    }))
-  };
+  
+    // Mock de Geolocation
+    const mockGeolocation = {
+      getCurrentPosition: jasmine.createSpy('getCurrentPosition').and.returnValue(Promise.resolve({
+        coords: {
+          latitude: 40.7128,
+          longitude: -74.0060
+        }
+      }))
+    };
+  
+    // Mock del WeatherService
+    const mockWeatherService = {
+      getWeather: jasmine.createSpy('getWeather').and.returnValue(of({
+        hourly: {
+          time: [],
+          temperature_2m: [],
+          relative_humidity_2m: []
+        }
+      }))
+    };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [HomePage],
+      imports: [IonicModule.forRoot(), RouterModule.forRoot([])],
       providers: [
-        { provide: WeatherService, useValue: mockWeatherService }
+        { provide: WeatherService, useValue: mockWeatherService },
+        { provide: Geolocation, useValue: mockGeolocation }, // Aquí incluimos el mock
+        provideHttpClientTesting(),
+        
       ]
+      
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
 
 
   it('Deberia obtener la posición actual', async () => {
@@ -66,22 +75,4 @@ describe('HomePage', () => {
   });
 
 
-
-
-
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [HomePage],
-      imports: [IonicModule.forRoot(), RouterModule.forRoot([])]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(HomePage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 });

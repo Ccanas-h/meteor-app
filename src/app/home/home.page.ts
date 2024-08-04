@@ -105,8 +105,6 @@ export class HomePage {
   }
 
 
-
-
 }
 
 
@@ -127,9 +125,4 @@ function formatNumber(num: string | number): string {
   } else {
     return num;
   }
-
-
-
-
-
 }
