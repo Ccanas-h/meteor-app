@@ -8,7 +8,6 @@
 
 <ion-content [fullscreen]="true" class="background-image">
 
-
   <ion-grid *ngIf="temperaturasDiarias.length">
     <ion-row class="ion-justify-content-center">
       <ion-col size="6" *ngFor="let tiempo of temperaturasDiarias">
@@ -17,7 +16,6 @@
             <ion-card-title>{{ tiempo?.day | date:"mediumDate" }}</ion-card-title>
             <ion-card-subtitle>{{ tiempo?.avgTemp.toFixed(1) }} °C</ion-card-subtitle>
           </ion-card-header>
-
           <ion-card-content>
             {{ tiempo.avgHum.toFixed(1) }} %
           </ion-card-content>
@@ -26,22 +24,36 @@
     </ion-row>
   </ion-grid>
 
+  <ion-card class="ion-margin-horizontal">
+    <ion-card-header>
+      <ion-card-title>Clima Diario</ion-card-title>
+    </ion-card-header>
 
+    <ion-card-content>
+      <ion-list *ngIf="temperaturasDiarias.length">
+        <ion-item *ngFor="let tiempo of temperaturasDiarias">
+          <ion-label>
+            {{ tiempo.day | date:"longDate"}}:
+            <br>
+            Temperatura: {{ tiempo.avgTemp.toFixed(1) }} °C,
+            Humedad: {{ tiempo.avgHum.toFixed(1) }} %
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
-
-  <ion-accordion-group>
+  <ion-accordion-group class="ion-margin-horizontal">
     <ion-accordion value="first">
       <ion-item slot="header" color="light">
         <ion-label>Datos Traidos con Capacitor segun Geolocalización del usuario</ion-label>
       </ion-item>
       <div class="ion-padding" slot="content">
-
         <ion-item>
           <ion-label>
             <pre>{{ currentPosition | json}} </pre>
           </ion-label>
         </ion-item>
-
       </div>
     </ion-accordion>
     <ion-accordion value="second">
@@ -56,24 +68,7 @@
         </ion-item>
       </div>
     </ion-accordion>
-
-
   </ion-accordion-group>
-
-
-
-  <div *ngIf="temperaturasDiarias.length">
-    <h2>Clima Diario</h2>
-    <ul>
-      <li *ngFor="let tiempo of temperaturasDiarias" class="ion-margin-top">
-        {{ tiempo.day | date:"longDate"}}:
-        <br>
-        Temperatura: {{ tiempo.avgTemp.toFixed(1) }} °C,
-        Humedad: {{ tiempo.avgHum.toFixed(1) }} %
-      </li>
-    </ul>
-  </div>
-
 
 
   <ion-grid class="ion-margin-top">
