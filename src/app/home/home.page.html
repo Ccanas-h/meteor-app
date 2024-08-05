@@ -8,7 +8,31 @@
 
 <ion-content [fullscreen]="true" class="background-image">
 
-  <ion-grid *ngIf="temperaturasDiarias.length && temperaturasDiarias as temps">
+
+  <ion-card *ngIf="opt() == 'home' && temperaturasDiarias?.length && temperaturasDiarias as temps"
+  class="ion-margin-horizontal ion-margin-vertical">
+  <ion-card-content>
+    <ion-list>
+      <ng-container *ngFor="let tiempo of temps; index as i">
+        <ion-item *ngIf="i < 4">
+          <ion-thumbnail slot="start">
+            <!-- <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" /> -->
+            <ion-icon [name]="getTipoClima(tiempo.avgTemp, tiempo.avgHum)" size="large"></ion-icon>
+          </ion-thumbnail>
+          <ion-label>
+            <ion-text style="font-size: 18px;"> {{ tiempo.day | date:"longDate"}} </ion-text>
+            <br>
+            <ion-text color="medium">Temperatura: {{ tiempo.avgTemp.toFixed(1) }} °C</ion-text>
+            <br>
+            <ion-text color="tertiary">Humedad: {{ tiempo.avgHum.toFixed(1) }} %</ion-text>
+          </ion-label>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+  <ion-grid *ngIf="opt() == 'two' && temperaturasDiarias.length && temperaturasDiarias as temps">
     <ion-row class="ion-justify-content-center">
       <ng-container *ngFor="let tiempo of temps; index as i">
         <ion-col size="6" *ngIf="i < 4">
@@ -29,30 +53,8 @@
     </ion-row>
   </ion-grid>
 
-  <ion-card *ngIf="temperaturasDiarias?.length && temperaturasDiarias as temps"
-    class="ion-margin-horizontal ion-margin-vertical">
-    <ion-card-content>
-      <ion-list>
-        <ng-container *ngFor="let tiempo of temps; index as i">
-          <ion-item *ngIf="i < 4">
-            <ion-thumbnail slot="start">
-              <!-- <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" /> -->
-              <ion-icon [name]="getTipoClima(tiempo.avgTemp, tiempo.avgHum)" size="large"></ion-icon>
-            </ion-thumbnail>
-            <ion-label>
-              <ion-text style="font-size: 18px;"> {{ tiempo.day | date:"longDate"}} </ion-text>
-              <br>
-              <ion-text color="medium">Temperatura: {{ tiempo.avgTemp.toFixed(1) }} °C</ion-text>
-              <br>
-              <ion-text color="tertiary">Humedad: {{ tiempo.avgHum.toFixed(1) }} %</ion-text>
-            </ion-label>
-          </ion-item>
-        </ng-container>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
 
-  <ion-accordion-group class="ion-margin-horizontal">
+  <ion-accordion-group *ngIf="opt() == 'three'" class="ion-margin-horizontal ion-margin-vertical">
     <ion-accordion value="first">
       <ion-item slot="header" color="light">
         <ion-label>Datos Traidos con Capacitor segun Geolocalización del usuario</ion-label>
@@ -89,3 +91,43 @@
   </ion-grid>
 
 </ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+
+      <ion-tabs>
+        <ion-tab-bar slot="bottom">
+      
+          <ion-tab-button (click)="opt.set('home')" [ngClass]="{'tab-selected': opt() == 'home'}">
+            <ion-icon aria-hidden="true" name="home-sharp"></ion-icon>      
+            <ion-label>Opción 1</ion-label>
+          </ion-tab-button>
+      
+          <ion-tab-button (click)="opt.set('two')" [ngClass]="{'tab-selected': opt() == 'two'}">
+            <ion-icon aria-hidden="true" name="logo-ionic"></ion-icon>
+            <ion-label>Opción 2</ion-label>
+          </ion-tab-button>
+      
+          <ion-tab-button (click)="opt.set('three')" [ngClass]="{'tab-selected': opt() == 'three'}">
+            <ion-icon aria-hidden="true" name="aperture-outline"></ion-icon>
+            <ion-label>Datos API y Capacitor</ion-label>
+          </ion-tab-button>
+      
+        </ion-tab-bar>
+      </ion-tabs>
+
+      <!-- <ion-segment value="buttons">
+        <ion-segment-button value="default" (click)="opt.set('home')">
+          <ion-label>Opción 1</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="segment" (click)="opt.set('two')">
+          <ion-label>Opción 2</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="buttons"  (click)="opt.set('three')">
+          <ion-label>Datos API y Capacitor</ion-label>
+        </ion-segment-button>
+      </ion-segment> -->
+
+  </ion-toolbar>
+</ion-footer>

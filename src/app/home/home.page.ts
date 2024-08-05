@@ -23,6 +23,7 @@ export class HomePage {
   // private _weather = inject(WeatherService);
   tiempo: any;
   diaSeleccionado: any = signal(null);
+  opt = signal("home");
 
   latitude: string = '';
   longitude: string = '';

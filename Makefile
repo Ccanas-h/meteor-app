@@ -22,6 +22,13 @@ run-android-capacitor ra:
 capacitor-sync-android sa:
 	ionic capacitor sync android
 
+#npx cap open android O desde android studio
+#Esto previo a hacer la apk
+for-apk apk:
+	ionic build
+	ionic capacitor build android
+
+
 
 build b:
 	export ANDROID_HOME=/usr/share/android-sdk2/ && ionic capacitor copy android && cd android && ./gradlew assembleDebug && cd ..
