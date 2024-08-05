@@ -4,9 +4,6 @@ import { WeatherService } from '../services/weather.service';
 import { formatDate } from '@angular/common';
 import { Geolocation } from '@capacitor/geolocation';
 
-
-
-
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -14,9 +11,16 @@ import { Geolocation } from '@capacitor/geolocation';
 })
 export class HomePage {
 
+  weatherIcons = {
+    despejado: 'sunny',
+    parcialSoleado: 'partly-sunny',
+    soleado: 'sunny',
+    lluvioso: 'rainy',
+    nuboso: 'cloud',
+    ventoso: 'cloudy',
+  };
 
-  private _weather = inject(WeatherService);
-
+  // private _weather = inject(WeatherService);
   tiempo: any;
   diaSeleccionado: any = signal(null);
 
@@ -26,7 +30,7 @@ export class HomePage {
 
   currentPosition: any;
 
-  constructor() { }
+  constructor(private _weather: WeatherService) { }
 
   async ngOnInit() {
     this.currentPosition = await (this.printCurrentPosition());
@@ -105,9 +109,26 @@ export class HomePage {
   }
 
 
+
+  getTipoClima(temp: number, hum: number): string {
+    if (temp > 25 && hum < 40) {
+      return this.weatherIcons.despejado;
+    } else if (temp > 20 && hum < 50) {
+      return this.weatherIcons.soleado;
+    } else if (temp >= 15 && temp <= 20 && hum < 60) {
+      return this.weatherIcons.parcialSoleado;
+    } else if (temp >= 10 && temp < 20 && hum >= 60 && hum < 80) {
+      return this.weatherIcons.ventoso;
+    } else if (temp >= 10 && temp < 15 && hum > 60) {
+      return this.weatherIcons.nuboso;
+    } else if (hum > 80) {
+      return this.weatherIcons.lluvioso;
+    } else {
+      return this.weatherIcons.nuboso; 
+    }
+  }
+
 }
-
-
 
 function formatNumber(num: string | number): string {
   num = num?.toString();

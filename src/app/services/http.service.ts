@@ -7,7 +7,8 @@ import { take } from 'rxjs';
 })
 export class HttpService {
 
-  private http = inject(HttpClient);
+  // private http = inject(HttpClient);
+  constructor(private http : HttpClient){}
 
   public get(url:string) {
     return this.http.get(url).pipe(
