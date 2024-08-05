@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 import { WeatherService } from '../services/weather.service';
 import { formatDate } from '@angular/common';
@@ -27,17 +27,17 @@ export class HomePage {
   latitude: string = '';
   longitude: string = '';
   temperaturasDiarias: any = [];
-
   currentPosition: any;
+
 
   constructor(private _weather: WeatherService) { }
 
   async ngOnInit() {
     this.currentPosition = await (this.printCurrentPosition());
     console.log("currentPosition ", this.currentPosition);
-    this.latitude = formatNumber(this.currentPosition?.coords?.latitude);
+    this.latitude = this.formatLatitudLongitud(this.currentPosition?.coords?.latitude);
     console.log("latitude ", this.latitude);
-    this.longitude = formatNumber(this.currentPosition?.coords?.longitude);
+    this.longitude = this.formatLatitudLongitud(this.currentPosition?.coords?.longitude);
     console.log("longitude ", this.longitude);
 
 
@@ -128,22 +128,17 @@ export class HomePage {
     }
   }
 
-}
 
-function formatNumber(num: string | number): string {
-  num = num?.toString();
-  const isNegative = num.startsWith('-');
-  const baseLength = isNegative ? 5 : 4;
-  const numLength = num.replace('-', '').replace('.', '').length;
-  const hasDecimal = num.includes('.');
-
-  if (hasDecimal && num.split('.')[1].length < 2) {
-    return num + '0';
-  } else if (numLength < baseLength || (!hasDecimal && numLength === baseLength)) {
-    return num + '0';
-  } else if (numLength > baseLength) {
-    return num.slice(0, baseLength + 1);
-  } else {
-    return num;
+  formatLatitudLongitud(num: number | string): string {
+    let numStr = num.toString();
+    if (numStr.length > 6) {
+      return numStr.slice(0, 6);
+    } else {
+      return numStr;
+    }
   }
+  
+
 }
+
+

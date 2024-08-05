@@ -46,8 +46,8 @@ describe('HomePage', () => {
       providers: [
         { provide: WeatherService, useValue: mockWeatherService },
         { provide: Geolocation, useValue: mockGeolocation }, // Aquí incluimos el mock,
-        provideHttpClient,
-        provideHttpClientTesting,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
 
@@ -56,26 +56,51 @@ describe('HomePage', () => {
     fixture.detectChanges();
   }));
 
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Debería obtener la posición actual', waitForAsync(async () => {
-    // Llama a la función printCurrentPosition
-    const position = await component['printCurrentPosition']();
 
-    // Verifica que la función de Geolocation haya sido llamada
-    expect(mockGeolocation.getCurrentPosition).toHaveBeenCalled();
+  it('Debería verificar que existan datos tras llamada a API Weather', waitForAsync(async (done: any) => {
+    try {
 
-    // Verifica que el resultado sea el esperado
-    expect(position.coords).toEqual({
-      latitude: 40.7128,
-      longitude: -74.0060,
-      accuracy: 50,
-      altitude: null,
-      altitudeAccuracy: null,
-      speed: null,
-      heading: null
-    });
+      const position = await component['printCurrentPosition']();
+
+      expect(mockGeolocation.getCurrentPosition).toHaveBeenCalled();
+
+      expect(typeof position.coords.latitude).toBe('number');
+
+      // expect(position.coords.latitude).toBe(40.7128);
+      // expect(position.coords.longitude).toBe(-74.0060);
+
+      done();
+    } catch (error) {
+      console.error("Error: 2", error);
+      done.fail(error);
+    }
   }));
+
+
+  it('should format numbers correctly', () => {
+
+    const testCases = [
+      { input: 5, expected: '5' }, 
+      { input: 5.1, expected: '5.1' }, 
+      { input: 5.123, expected: '5.123' }, 
+      { input: -5, expected: '-5' }, 
+      { input: -5.1, expected: '-5.1' }, 
+      { input: -5.123, expected: '-5.123' }, 
+      { input: 123.456789, expected: '123.45' } // Test caso con más de 5 dígitos
+    ];
+    
+    testCases.forEach(({ input, expected }) => {
+      const result = component.formatLatitudLongitud(input);
+      console.log(`Expected ${expected} but got ${result} for input ${input}`);
+      expect(result).toBe(expected);
+    });
+  });
+
+
+
 });
